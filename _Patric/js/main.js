@@ -8,7 +8,7 @@ var lvl_one_map = [
     { name: "right wall", height: 200, width: 2000, posX: 1000, posY: 0, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "blue", opacity: 0.5 },
     { name: "left wall", height: 200, width: 2000, posX: -1000, posY: 0, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.5 },
     { name: "front wall", height: 200, width: 2000, posX: 0, posY: 0, posZ: 1000, rotX: 0, rotY: 0, rotZ: 0, color: "#ecc0d1", opacity: 0.5 },
-    { name: "hinter wall", height: 200, width: 2000, posX: 0, posY: 0, posZ: 1000, rotX: 0, rotY: 0, rotZ: 0, color: "yellow", opacity: 0.5 },
+    { name: "hinter wall", height: 200, width: 2000, posX: 0, posY: 0, posZ: -1000, rotX: 0, rotY: 0, rotZ: 0, color: "yellow", opacity: 0.5 },
 ];
 
 function createWorld(map) {
