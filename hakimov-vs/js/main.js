@@ -136,29 +136,32 @@ document.addEventListener("pointerlockchange", ()=>{
 
 let counter = 0;
 
-function cerateCube(x, z){
+function cerateCube(x, z, y=150){
      shapes.push(
-        { name: "wall1", height: 100, width: 100, posX: 0+x, posY: -100, posZ: 0+z, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 100+x, posY: -100, posZ: 0+z, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: -100, posZ: -50+z, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: -100, posZ: 50+z, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: -150, posZ: 0+z, rotX: 90, rotY: 0, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: -50, posZ: 0+z, rotX: 90, rotY: 0, rotZ: 0, color: "orange", opacity: 0.3, img:   "./assets/box.jfif", bgsize: "100%"}
+        { name: "wall1", height: 100, width: 100, posX: 0+x, posY: 0+y, posZ: 0+z, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/box.jfif", bgsize: "100%"},
+        { name: "wall2", height: 100, width: 100, posX: 100+x, posY: 0+y, posZ: 0+z, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
+        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: 0+y, posZ: -50+z, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
+        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: 0+y, posZ: 50+z, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
+        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: -50+y, posZ: 0+z, rotX: 90, rotY: 0, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
+        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: -50+y, posZ: 0+z, rotX: 90, rotY: 0, rotZ: 0, color: "orange", opacity: 0.3, img:   "./assets/box.jfif", bgsize: "100%"}
     );
 }
 
 document.addEventListener("click", async () => {
-    counter++;
     if (!lockMouse) {
         await myContainer.requestPointerLock({
             unadjustedMovement: true,
         });
     }
+});
+
+myContainer.onclick = function(){
+    counter++;
     if(counter > 1){
-        cerateCube(pawn.x, pawn.z)
+        cerateCube(pawn.x, pawn.y)
     }
     createWorld(shapes)
-});
+}
 
 
 
@@ -173,8 +176,8 @@ function update() {
     drx = mouseY; // 0
     mouseX = mouseY = 0;
 
+    collision(shapes, pawn)
     collision(lvl_one_map, pawn);
-
     
     if(lockMouse){
         pawn.z += dz;
@@ -192,22 +195,18 @@ var game = setInterval(update, 10);
 function collision(mapObj, leadObj) {
     onGround = false;
     for (let i = 0; i < mapObj.length; i++) {
-        //spēlētāja koordinātes katra taiststūra koordināšu sistēmā
         let x0 = (leadObj.x - mapObj[i].posX);
         let y0 = (leadObj.y - mapObj[i].posY);
         let z0 = (leadObj.z - mapObj[i].posZ);
 
         if ((x0 ** 2 + y0 ** 2 + z0 ** 2 + dx ** 2 + dy ** 2 + dz ** 2) < (mapObj[i].width ** 2 + mapObj[i].height ** 2)) {
-            //Pārvietošanās
             let x1 = x0 + dx;
             let y1 = y0 + dy;
             let z1 = z0 + dz;
 
-            //Jaunā punkta koodrinātes
             let point0 = coorTransform(x0, y0, z0, mapObj[i].rotX, mapObj[i].rotY, mapObj[i].rotZ);
             let point1 = coorTransform(x1, y1, z1, mapObj[i].rotX, mapObj[i].rotY, mapObj[i].rotZ);
             let normal = coorReTransform(0, 0, 1, mapObj[i].rotX, mapObj[i].rotY, mapObj[i].rotZ);
-            // let point2 = new Array();
 
             if (Math.abs(point1[0]) < (mapObj[i].width + 70) / 2 && Math.abs(point1[1]) < (mapObj[i].height + 70) / 2 && Math.abs(point1[2]) < 50) {
                 point1[2] = Math.sign(point0[2]) * 50;
