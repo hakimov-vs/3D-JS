@@ -4,6 +4,13 @@ var myContainer = document.getElementById("container");
 var myPawn = document.getElementById("pawn");
 let lockMouse = false;
 
+let text = document.createElement("h1");
+text.id = "text";
+
+text.textContent = "dwd";
+
+myContainer.appendChild(text);
+
 var lvl_one_map = [
     { name: "floor", height: 2000, width: 2000, posX: 0, posY: 200, posZ: 0, rotX: 90, rotY: 0, rotZ: 0, color: "violet", opacity: 0.3, img: "./assets/floor.jfif", bgsize: "15%"},
     { name: "ceiling", height: 2000, width: 2000, posX: 0, posY: -200, posZ: 0, rotX: 90, rotY: 0, rotZ: 0, color: "green", opacity: 0.3, img: "./assets/sky.jpg",  bgsize: "cover"},
@@ -31,12 +38,11 @@ var lvl_one_map = [
 ];
 
 
-
-
 function createWorld(map) {
     for (let i = 0; i < map.length; i++) {
         var mySquare = document.createElement("div");
-        mySquare.id = map[i].name;
+        mySquare.id = map[i].name + `${i}`;
+        map[i].name = mySquare.id;
         mySquare.style.position = "absolute";
         mySquare.style.height = `${map[i].height}px`;
         mySquare.style.width = `${map[i].width}px`;
@@ -59,7 +65,9 @@ function createWorld(map) {
 }
 
 
-createWorld(lvl_one_map);   
+createWorld(lvl_one_map);  
+
+
 
 let shapes = [];
  
@@ -147,6 +155,31 @@ function cerateCube(x, z, y=150){
     );
 }
 
+function getLookDirection() {
+    let pitch = pawn.rx * DEG;
+    let yaw = pawn.ry * DEG;
+
+    return {
+        x: Math.sin(yaw) * Math.cos(pitch),
+        y: -Math.sin(pitch),
+        z: Math.cos(yaw) * Math.cos(pitch)
+    };
+}
+
+function raycast(maxDistance = 500) {
+
+    const dir = getLookDirection();
+
+    for(let d = 0; d < maxDistance; d += 5){
+
+        let rx = pawn.x + dir.x * d;
+        let ry = pawn.y + dir.y * d;
+        let rz = pawn.z + dir.z * d;
+
+        // check blocks here
+    }
+}
+
 document.addEventListener("click", async () => {
     if (!lockMouse) {
         await myContainer.requestPointerLock({
@@ -155,19 +188,17 @@ document.addEventListener("click", async () => {
     }
 });
 
-myContainer.onclick = function(){
-    counter++;
-    if(counter > 1){
-        cerateCube(pawn.x, pawn.y)
-    }
-    createWorld(shapes)
-}
+// myContainer.onclick = function(){
+//     counter++;
+//     if(counter > 1){
+//         cerateCube(pawn.x, pawn.y)
+//     }
+//     createWorld(shapes)
+// }
 
 
 
 function update() {
-    // dz = pressUp - pressDown;
-    // dx = pressLeft - pressRight;
 
     dx = (pressLeft - pressRight)*Math.cos(pawn.ry * DEG) + (pressUp - pressDown)*Math.sin(pawn.ry * DEG);
     dz = -(pressLeft - pressRight)*Math.sin(pawn.ry * DEG) + (pressUp - pressDown)*Math.cos(pawn.ry * DEG);
@@ -176,19 +207,31 @@ function update() {
     drx = mouseY; // 0
     mouseX = mouseY = 0;
 
-    collision(shapes, pawn)
+
     collision(lvl_one_map, pawn);
     
     if(lockMouse){
         pawn.z += dz;
         pawn.x += dx;       
         pawn.ry += dry;
-        // pawn.ry = Math.max(-360, Math.min(360, pawn.ry))
         pawn.rx -= drx;
         pawn.rx = Math.max(-40, Math.min(40, pawn.rx));
     }
     myWorld.style.transform = `translateZ(600px) RotateX(${pawn.rx}deg) RotateY(${pawn.ry}deg) translate3d(${-pawn.x}px, ${pawn.y}px, ${pawn.z}px) `;
+
+    // interact(lvl_one_obj)
 }
+
+// function interact(obj) {
+//   for (let i = 0; i < obj.length; i++) {
+//     let r = (pawn.x - obj[i].posX) ** 2 + (pawn.y - obj[i].posY) ** 2 + (pawn.z - obj[i].posZ) ** 2;
+//     if (r < (obj[i].width) ** 2 + (obj[i].height) ** 2) {
+//         let tempObj = document.getElementById(obj[i].name);
+//         myWorld.removeChild(tempObj);
+//         lvl_one_obj.splice(i, 1);
+//     }
+//   }
+// }
 
 var game = setInterval(update, 10);
 
