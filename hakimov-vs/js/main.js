@@ -4,46 +4,81 @@ var myContainer = document.getElementById("container");
 var myPawn = document.getElementById("pawn");
 let lockMouse = false;
 
+let coin =  0, level = 1, coin_amount = 10;
+
 let text = document.createElement("h1");
 text.id = "text";
+text.textContent = `Coins: 0 / ${coin_amount} Level 1`;
 
-text.textContent = "dwd";
+myContainer.appendChild(text); 
 
-myContainer.appendChild(text);
+var active_map = [
+    { name: "floor", class: "walls", height: 2000, width: 2000, posX: 0, posY: 200, posZ: 0, rotX: 90, rotY: 0, rotZ: 0, color: "violet", opacity: 0.3, img: "./assets/floor.jfif", bgsize: "15%"},
+    { name: "ceiling", class: "walls", height: 2000, width: 2000, posX: 0, posY: -200, posZ: 0, rotX: 90, rotY: 0, rotZ: 0, color: "green", opacity: 0.3, img: "./assets/sky.jpg",  bgsize: "cover"},
+    
+    { name: "right wall", class: "walls", height: 400, width: 2000, posX: 1000, posY: 0, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "blue", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
+    { name: "left wall", class: "walls", height: 400, width: 2000, posX: -1000, posY: 0, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
+    { name: "front wall", class: "walls", height: 400, width: 2000, posX: 0, posY: 0, posZ: 1000, rotX: 0, rotY: 0, rotZ: 0, color: "#ecc0d1", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
+    { name: "hinter wall", class: "walls", height: 400, width: 2000, posX: 0, posY: 0, posZ: -1000, rotX: 0, rotY: 0, rotZ: 0, color: "yellow", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
+]
 
 var lvl_one_map = [
-    { name: "floor", height: 2000, width: 2000, posX: 0, posY: 200, posZ: 0, rotX: 90, rotY: 0, rotZ: 0, color: "violet", opacity: 0.3, img: "./assets/floor.jfif", bgsize: "15%"},
-    { name: "ceiling", height: 2000, width: 2000, posX: 0, posY: -200, posZ: 0, rotX: 90, rotY: 0, rotZ: 0, color: "green", opacity: 0.3, img: "./assets/sky.jpg",  bgsize: "cover"},
+    { name: "floor", class: "walls", height: 2000, width: 2000, posX: 0, posY: 200, posZ: 0, rotX: 90, rotY: 0, rotZ: 0, color: "violet", opacity: 0.3, img: "./assets/floor.jfif", bgsize: "15%"},
+    { name: "ceiling", class: "walls", height: 2000, width: 2000, posX: 0, posY: -200, posZ: 0, rotX: 90, rotY: 0, rotZ: 0, color: "green", opacity: 0.3, img: "./assets/sky.jpg",  bgsize: "cover"},
     
-    { name: "right wall", height: 400, width: 2000, posX: 1000, posY: 0, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "blue", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
-    { name: "left wall", height: 400, width: 2000, posX: -1000, posY: 0, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
-    { name: "front wall", height: 400, width: 2000, posX: 0, posY: 0, posZ: 1000, rotX: 0, rotY: 0, rotZ: 0, color: "#ecc0d1", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
-    { name: "hinter wall", height: 400, width: 2000, posX: 0, posY: 0, posZ: -1000, rotX: 0, rotY: 0, rotZ: 0, color: "yellow", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
+    { name: "right wall", class: "walls", height: 400, width: 2000, posX: 1000, posY: 0, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "blue", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
+    { name: "left wall", class: "walls", height: 400, width: 2000, posX: -1000, posY: 0, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
+    { name: "front wall", class: "walls", height: 400, width: 2000, posX: 0, posY: 0, posZ: 1000, rotX: 0, rotY: 0, rotZ: 0, color: "#ecc0d1", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
+    { name: "hinter wall", class: "walls", height: 400, width: 2000, posX: 0, posY: 0, posZ: -1000, rotX: 0, rotY: 0, rotZ: 0, color: "yellow", opacity: 0.3, img: "./assets/wall.jpg", bgsize: "15%"},
     // wall 1
-    { name: "wall1", height: 300, width: 1200, posX: 700, posY: 50, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
-    { name: "wall2", height: 300, width: 1200, posX: 600, posY: 50, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
-    { name: "wall3", height: 300, width: 100, posX: 650, posY: 50, posZ: 600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
-    { name: "wall3", height: 300, width: 100, posX: 650, posY: 50, posZ: -600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
+    { name: "wall1", class: "walls", height: 300, width: 1200, posX: 700, posY: 50, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
+    { name: "wall2", class: "walls", height: 300, width: 1200, posX: 600, posY: 50, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
+    { name: "wall3", class: "walls", height: 300, width: 100, posX: 650, posY: 50, posZ: 600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
+    { name: "wall3", class: "walls", height: 300, width: 100, posX: 650, posY: 50, posZ: -600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
     // wall 2
-    { name: "wall1", height: 300, width: 1200, posX: -700, posY: 50, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
-    { name: "wall2", height: 300, width: 1200, posX: -600, posY: 50, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
-    { name: "wall3", height: 300, width: 100, posX: -650, posY: 50, posZ: 600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
-    { name: "wall3", height: 300, width: 100, posX: -650, posY: 50, posZ: -600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
+    { name: "wall1", class: "walls", height: 300, width: 1200, posX: -700, posY: 50, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
+    { name: "wall2", class: "walls", height: 300, width: 1200, posX: -600, posY: 50, posZ: 0, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
+    { name: "wall3", class: "walls", height: 300, width: 100, posX: -650, posY: 50, posZ: 600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
+    { name: "wall3", class: "walls", height: 300, width: 100, posX: -650, posY: 50, posZ: -600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
      // wall 3
-    { name: "wall1", height: 300, width: 1200, posX: 0, posY: 50, posZ: 600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
-    { name: "wall2", height: 300, width: 1000, posX: -100, posY: 50, posZ: -600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
-    { name: "wall2", height: 300, width: 1000, posX: -100, posY: 50, posZ: -500, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
-    { name: "wall3", height: 300, width: 100, posX: 400, posY: 50, posZ: -550, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
+    { name: "wall1", class: "walls", height: 300, width: 1200, posX: 0, posY: 50, posZ: 600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
+    { name: "wall2", class: "walls", height: 300, width: 1000, posX: -100, posY: 50, posZ: -600, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
+    { name: "wall2", class: "walls", height: 300, width: 1000, posX: -100, posY: 50, posZ: -500, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "100%"},
+    { name: "wall3", class: "walls", height: 300, width: 100, posX: 400, posY: 50, posZ: -550, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/grasswall.jpg", bgsize: "1000%"},
     
 ];
+
+function randomCoins(count = 10) {
+    const coins = [];
+    for (let i = 0; i < count; i++) {
+        coins.push({
+            name: "coin" + i,
+            class: "coins",
+            height: 100,
+            width: 100,
+            posX: Math.random() * 1600 - 800,  
+            posY: 0,                        
+            posZ: Math.random() * 1600 - 800,  
+            rotX: 0,
+            rotY: 90,
+            rotZ: 0,
+            img: "./assets/coin.png",
+            bgsize: "100%"
+        });
+    }
+    return coins;
+}
+
+var lvl_one_obj = randomCoins(coin_amount);
+
 
 
 function createWorld(map) {
     for (let i = 0; i < map.length; i++) {
         var mySquare = document.createElement("div");
         mySquare.id = map[i].name + `${i}`;
-        map[i].name = mySquare.id;
         mySquare.style.position = "absolute";
+        mySquare.className = map[i].class;
         mySquare.style.height = `${map[i].height}px`;
         mySquare.style.width = `${map[i].width}px`;
         mySquare.style.backgroundColor = map[i].color;
@@ -64,12 +99,44 @@ function createWorld(map) {
     }
 }
 
+function createObj(map) {
+    for (let i = 0; i < map.length; i++) {
+        var wrapper = document.createElement("div");
+        wrapper.style.position = "absolute";
+        wrapper.style.height = `${map[i].height}px`;
+        wrapper.style.width  = `${map[i].width}px`;
+        wrapper.style.transform = `
+            translate3d(
+                ${map[i].posX + myWorld.clientWidth  / 2 - map[i].width  / 2}px,
+                ${map[i].posY + myWorld.clientHeight / 2 - map[i].height / 2}px,
+                ${-map[i].posZ}px
+            )
+            rotateX(${map[i].rotX}deg)
+            rotateY(${map[i].rotY}deg)
+            rotateZ(${map[i].rotZ}deg)
+        `;
 
-createWorld(lvl_one_map);  
+        var coin = document.createElement("div");
+        coin.id = map[i].name + `${i}`;
+        map[i].name = coin.id;
+        coin.className = map[i].class;
+        coin.style.width  = "100%";
+        coin.style.height = "100%";
+        coin.style.backgroundImage    = `url("${map[i].img}")`;
+        coin.style.backgroundSize     = map[i].bgsize;
+        coin.style.backgroundPosition = "center";
+
+        wrapper.appendChild(coin);
+        myWorld.appendChild(wrapper);
+    }
+}
 
 
 
-let shapes = [];
+createWorld(active_map);  
+
+createObj(lvl_one_obj);
+
  
 
 let dx = dy = dz = dry = 0;
@@ -91,6 +158,8 @@ function player(x, y, z, rx, ry, rz, vx, vy, vz) {
 
 let pawn = new player(0, 0, 0, 0, 0, 0, vel, vel, vel);
 
+const walkSound = new Audio("./assets/walking.mp3");
+
 document.addEventListener("keydown", (e) => {
     if (e.code == "KeyW") {
         pressUp = pawn.vz;
@@ -104,9 +173,16 @@ document.addEventListener("keydown", (e) => {
     if (e.code == "KeyA") {
         pressRight = pawn.vx;
     }
+
+    if (["KeyW","KeyS","KeyA","KeyD"].includes(e.code)) {
+        walkSound.play();
+    }
+
+    interact(lvl_one_obj)
 });
 
 document.addEventListener("keyup", (e) => {
+    walkSound.pause();
     if (e.code == "KeyW") {
         pressUp = 0;
     }
@@ -142,43 +218,6 @@ document.addEventListener("pointerlockchange", ()=>{
     lockMouse = !lockMouse
 })
 
-let counter = 0;
-
-function cerateCube(x, z, y=150){
-     shapes.push(
-        { name: "wall1", height: 100, width: 100, posX: 0+x, posY: 0+y, posZ: 0+z, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img: "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 100+x, posY: 0+y, posZ: 0+z, rotX: 0, rotY: 90, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: 0+y, posZ: -50+z, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: 0+y, posZ: 50+z, rotX: 0, rotY: 180, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: -50+y, posZ: 0+z, rotX: 90, rotY: 0, rotZ: 0, color: "orange", opacity: 0.3, img:  "./assets/box.jfif", bgsize: "100%"},
-        { name: "wall2", height: 100, width: 100, posX: 50+x, posY: -50+y, posZ: 0+z, rotX: 90, rotY: 0, rotZ: 0, color: "orange", opacity: 0.3, img:   "./assets/box.jfif", bgsize: "100%"}
-    );
-}
-
-function getLookDirection() {
-    let pitch = pawn.rx * DEG;
-    let yaw = pawn.ry * DEG;
-
-    return {
-        x: Math.sin(yaw) * Math.cos(pitch),
-        y: -Math.sin(pitch),
-        z: Math.cos(yaw) * Math.cos(pitch)
-    };
-}
-
-function raycast(maxDistance = 500) {
-
-    const dir = getLookDirection();
-
-    for(let d = 0; d < maxDistance; d += 5){
-
-        let rx = pawn.x + dir.x * d;
-        let ry = pawn.y + dir.y * d;
-        let rz = pawn.z + dir.z * d;
-
-        // check blocks here
-    }
-}
 
 document.addEventListener("click", async () => {
     if (!lockMouse) {
@@ -187,15 +226,6 @@ document.addEventListener("click", async () => {
         });
     }
 });
-
-// myContainer.onclick = function(){
-//     counter++;
-//     if(counter > 1){
-//         cerateCube(pawn.x, pawn.y)
-//     }
-//     createWorld(shapes)
-// }
-
 
 
 function update() {
@@ -208,7 +238,7 @@ function update() {
     mouseX = mouseY = 0;
 
 
-    collision(lvl_one_map, pawn);
+    collision(active_map, pawn);
     
     if(lockMouse){
         pawn.z += dz;
@@ -219,19 +249,38 @@ function update() {
     }
     myWorld.style.transform = `translateZ(600px) RotateX(${pawn.rx}deg) RotateY(${pawn.ry}deg) translate3d(${-pawn.x}px, ${pawn.y}px, ${pawn.z}px) `;
 
-    // interact(lvl_one_obj)
+    
 }
 
-// function interact(obj) {
-//   for (let i = 0; i < obj.length; i++) {
-//     let r = (pawn.x - obj[i].posX) ** 2 + (pawn.y - obj[i].posY) ** 2 + (pawn.z - obj[i].posZ) ** 2;
-//     if (r < (obj[i].width) ** 2 + (obj[i].height) ** 2) {
-//         let tempObj = document.getElementById(obj[i].name);
-//         myWorld.removeChild(tempObj);
-//         lvl_one_obj.splice(i, 1);
-//     }
-//   }
-// }
+
+const coinSound = new Audio("./assets/coin.mp3");
+
+function interact(obj) {
+    for (let i = obj.length - 1; i >= 0; i--) {
+        let r = (pawn.x - obj[i].posX) ** 2
+            + (pawn.y - obj[i].posY) ** 2
+            + (pawn.z - obj[i].posZ) ** 2;
+
+        if (r < obj[i].width ** 2 + obj[i].height ** 2) {
+            coinSound.play();
+            let coinEl = document.getElementById(obj[i].name);
+            if (coinEl && coinEl.parentElement) {
+                coin++;
+                if (coin % 5 == 0) {
+                    level++;
+                    if (level == 2) {
+                        active_map = lvl_one_map;
+                        createWorld(active_map);
+                        text.className = "text_lvl_two";
+                    }
+                }
+                myWorld.removeChild(coinEl.parentElement);
+                text.textContent = `Coin: ${coin} / ${coin_amount} Level ${level}`
+            }
+            obj.splice(i, 1);
+        }
+    }
+}
 
 var game = setInterval(update, 10);
 

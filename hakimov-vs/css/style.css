@@ -23,6 +23,37 @@
     border-radius: 20px;
     background-color: blueviolet;
     transform: translate(-50%, -50%);
-    z-index: 1000 !important;
 }
 
+.coins {
+    transform-style: preserve-3d;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotateY(0deg);   }
+    to   { transform: rotateY(360deg); }
+}
+
+#text {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 9999 !important;
+    color: white;
+    margin: 0;
+    font-family: "Arial";
+    text-shadow: 2px 2px 4px black;
+    pointer-events: none;
+    font-size: 25px;
+}
+
+.text_lvl_two{
+    animation: lvl_two 3s;
+}
+
+
+@keyframes lvl_two {
+    from { left: 50%; top: 50%; font-size: 100px;  }
+    to   { top: 20px; left: 20px;  font-size: 25px;}
+}
